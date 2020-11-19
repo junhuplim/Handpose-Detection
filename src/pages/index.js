@@ -4,15 +4,17 @@ import * as handpose from "@tensorflow-models/handpose";
 import Webcam from "react-webcam";
 import { drawHand } from "./hand";
 import * as fp from "fingerpose";
+import fistDescription from "./fist";
 import victory from "../victory.png";
 import thumbs_up from "../thumbs_up.png";
+import fist from "../fist.png";
 
 export default function Home() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
   const [emoji, setEmoji] = useState(null);
-  const images = { thumbs_up: thumbs_up, victory: victory };
+  const images = { thumbs_up: thumbs_up, victory: victory, fist: fist };
 
   const runHandpose = async () => {
     const net = await handpose.load();
@@ -51,11 +53,12 @@ export default function Home() {
         const GE = new fp.GestureEstimator([
           fp.Gestures.VictoryGesture,
           fp.Gestures.ThumbsUpGesture,
+          fistDescription
         ]);
         const gesture = await GE.estimate(hand[0].landmarks, 4);
+      
         if (gesture.gestures !== undefined && gesture.gestures.length > 0) {
           // console.log(gesture.gestures);
-
           const confidence = gesture.gestures.map(
             (prediction) => prediction.confidence
           );
